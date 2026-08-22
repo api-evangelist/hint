@@ -1,0 +1,91 @@
+generated: '2026-08-22'
+method: probed
+source: https://www.drinkhint.com/api/ucp/mcp (JSON-RPC tools/list, anonymous, HTTP 200)
+name: Hint Storefront Agentic Commerce MCP
+provider: Hint Inc.
+summary: >-
+  drinkhint.com serves a live Model Context Protocol endpoint for agent-driven commerce against
+  Hint's own product catalog. It is reachable anonymously — an unauthenticated POST of
+  {"jsonrpc":"2.0","id":1,"method":"tools/list"} returned HTTP 200 with 13 tools and full
+  inputSchema for each on 2026-08-22. The server is provided natively by the Shopify platform
+  (serverInfo.name "universal-commerce", version 0.1.0) implementing the Universal Commerce
+  Protocol, and is served from Hint's own hosts against Hint's own catalog.
+ownership_note: >-
+  The endpoint is on Hint's own domain (www.drinkhint.com) and its mirror on the store's Shopify
+  tenant (drinkhint.myshopify.com). The UCP merchant profile names merchant "drinkhint.com" with
+  Shopify gateway merchant id 1430159418. This is Hint's storefront surface running on
+  platform-provided software — the templated/self-hosted case — not a Hint-authored API product,
+  and it is not a spec belonging to a different company.
+deployment:
+  mode: remote
+  endpoint: https://www.drinkhint.com/api/ucp/mcp
+  auth: none
+  verified: probed
+transport: streamable-http
+protocol_version: '2024-11-05'
+server_info:
+  name: universal-commerce
+  version: 0.1.0
+capabilities:
+  tools:
+    listChanged: true
+  prompts:
+    listChanged: true
+  resources:
+    listChanged: true
+  logging: {}
+discovery:
+  ucp_profile: https://www.drinkhint.com/.well-known/ucp
+  agent_instructions: https://www.drinkhint.com/agents.md
+  llms_txt: https://www.drinkhint.com/llms.txt
+  robots_txt: https://www.drinkhint.com/robots.txt
+  agentic_sitemap: https://www.drinkhint.com/sitemap_agentic_discovery.xml
+  mirror_endpoint: https://drinkhint.myshopify.com/api/ucp/mcp
+raw_tools_list: mcp/hint-mcp-tools.json
+tool_count: 13
+tools:
+- name: search_catalog
+  category: catalog
+  description: Search for products from the online store, hosted on Shopify.
+- name: lookup_catalog
+  category: catalog
+  description: Look up multiple products or variants by identifier.
+- name: get_product
+  category: catalog
+  description: Retrieve complete product detail by identifier. Returns a singular product.
+- name: create_cart
+  category: cart
+  description: Creates a new cart.
+- name: get_cart
+  category: cart
+  description: Get the cart contents.
+- name: update_cart
+  category: cart
+  description: Perform updates to a cart.
+- name: cancel_cart
+  category: cart
+  description: Cancels a cart.
+- name: create_checkout
+  category: checkout
+  description: Creates a checkout; returns line items, totals, discounts and taxes.
+- name: get_checkout
+  category: checkout
+  description: Returns details about the checkout, including line items, totals, discounts and taxes.
+- name: update_checkout
+  category: checkout
+  description: Updates a checkout (buyer, fulfillment, discounts, payment instruments).
+- name: complete_checkout
+  category: checkout
+  description: Completes a checkout and returns the checkout result. Requires buyer approval of payment.
+- name: cancel_checkout
+  category: checkout
+  description: Cancels a checkout.
+- name: get_order
+  category: order
+  description: Get the details of an order.
+notes:
+- Every tool requires a `meta.ucp-agent.profile` URI; calls without one are rejected with JSON-RPC
+  error -32001 / invalid_profile_url (observed 2026-08-22, HTTP 422).
+- Prices in responses are integers in ISO 4217 minor units paired with a currency code.
+- The published agent instructions state checkout must not be completed without explicit,
+  contemporaneous buyer approval, and point personal shopping agents at https://shop.app/SKILL.md.

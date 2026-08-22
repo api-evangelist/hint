@@ -1,0 +1,29 @@
+generated: '2026-08-22'
+method: probed
+source: https://www.drinkhint.com/.well-known/openid-configuration (scopes_supported), HTTP 200
+docs: https://www.drinkhint.com/.well-known/openid-configuration
+summary: >-
+  The only scope surface Hint's hosts publish is the Shopify Customer Accounts OpenID Connect
+  discovery document. Four scopes are advertised. The agentic commerce MCP endpoint itself is
+  anonymous and declares no scopes.
+authorization_server: https://shopify.com/authentication/1430159418
+flows:
+- type: authorization_code
+  pkce: S256
+scope_count: 4
+scopes:
+- name: openid
+  description: Standard OpenID Connect scope; requests an ID token for the buyer.
+- name: email
+  description: Releases the buyer's email address and email_verified claim.
+- name: customer-account-api:full
+  description: >-
+    Full access to the Shopify Customer Account API for the signed-in buyer (orders, addresses,
+    subscriptions, profile). Observed as the scope requested by the storefront login flow.
+- name: customer-account-mcp-api:full
+  description: >-
+    Full access to the authenticated Customer Account MCP API for the signed-in buyer — the
+    logged-in counterpart to the anonymous storefront commerce MCP endpoint.
+notes:
+- Hint publishes no scope reference page of its own; these values are read directly from the
+  machine-readable discovery document served on its host.

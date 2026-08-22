@@ -1,0 +1,60 @@
+generated: '2026-08-22'
+method: probed
+source: >-
+  live JSON-RPC calls against https://www.drinkhint.com/api/ucp/mcp, 2026-08-22, plus the tool
+  schemas in mcp/hint-mcp-tools.json
+format: json-rpc-2.0
+note: >-
+  Hint publishes no error reference page and there is no OpenAPI to derive 4xx/5xx responses from.
+  The envelope below was observed directly on the live MCP endpoint. Only errors actually returned
+  to an anonymous probe are recorded — the authenticated and transacting error space is not
+  enumerated here and must not be assumed.
+envelope:
+  media_type: application/json
+  shape:
+    jsonrpc: '2.0'
+    id: <request id>
+    error:
+      code: <JSON-RPC integer code>
+      message: <human readable string>
+      data:
+        code: <machine readable slug>
+        content: <detail string>
+        continue_url: <URL to hand the buyer back to the storefront>
+  fields:
+  - name: error.code
+    description: JSON-RPC error code. Server-defined codes observed in the -32000 range.
+  - name: error.message
+    description: Short human-readable summary.
+  - name: error.data.code
+    description: Machine-readable slug an agent should branch on.
+  - name: error.data.content
+    description: Detail string explaining what was missing or invalid.
+  - name: error.data.continue_url
+    description: Storefront URL to hand the buyer to when the agent cannot proceed.
+problem_types:
+- code: -32001
+  data_code: invalid_profile_url
+  title: UCP discovery failed
+  http_status: 422
+  detail: 'Unable to fetch agent profile: Missing profile uri'
+  cause: >-
+    The request omitted meta["ucp-agent"].profile, or supplied a profile URI the server could not
+    fetch.
+  remediation: >-
+    Send meta.ucp-agent.profile as a resolvable https URI describing the calling agent, per the UCP
+    2026-04-08 specification.
+  observed: true
+  evidence: POST {"jsonrpc":"2.0","id":9,"method":"nope/nope"} returned HTTP 422 with this body
+rate_limit_error:
+  status: 429
+  documented_at: https://www.drinkhint.com/agents.md
+  guidance: >-
+    "Respect rate limits. The MCP endpoint is rate-limited per IP. Back off on 429 responses." No
+    429 was provoked during profiling, so the 429 body shape is not recorded.
+gaps:
+- >-
+    Errors for out-of-stock items, declined payment, invalid discount codes, unsupported shipping
+    destinations and expired checkouts are all reachable in normal use but were not observed
+    anonymously and are not published by the provider. They are deliberately absent rather than
+    guessed.

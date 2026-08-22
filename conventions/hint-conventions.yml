@@ -1,0 +1,147 @@
+generated: '2026-08-22'
+method: derived
+source: >-
+  mcp/hint-mcp-tools.json (live tools/list from https://www.drinkhint.com/api/ucp/mcp),
+  https://www.drinkhint.com/agents.md, https://www.drinkhint.com/robots.txt,
+  https://www.drinkhint.com/policies/refund-policy
+summary: >-
+  Cross-cutting runtime semantics for Hint's agentic commerce surface, derived from the live MCP
+  tool input schemas and the provider's published agent instructions. There is no REST OpenAPI to
+  read; JSON-RPC 2.0 over HTTP is the whole protocol surface.
+protocol:
+  style: json-rpc-2.0
+  transport: streamable-http
+  endpoint: https://www.drinkhint.com/api/ucp/mcp
+  content_type: application/json
+  accept: application/json, text/event-stream
+authentication:
+  style: anonymous
+  detail: >-
+    No credential is required for catalog, cart or checkout tools. Every call must carry
+    meta["ucp-agent"].profile, a URI identifying the calling agent's UCP profile; omitting it is
+    rejected with JSON-RPC -32001 invalid_profile_url over HTTP 422.
+  see: authentication/hint-authentication.yml
+idempotency:
+  supported: true
+  mechanism: request field
+  field: meta["idempotency-key"]
+  required_on:
+  - complete_checkout
+  optional_on: []
+  scope: per checkout completion
+  retention: not published
+  evidence: >-
+    complete_checkout declares meta.idempotency-key as a required string property with the
+    description "An idempotency key for completing the checkout" in the live tools/list schema
+    fetched 2026-08-22. No other tool declares the field.
+  note: >-
+    The single most consequential operation on the surface — the one that charges a buyer — is the
+    only one that requires an idempotency key. Cart and checkout mutation tools are not
+    idempotency-keyed.
+pagination:
+  style: cursor
+  applies_to:
+  - search_catalog
+  request_fields:
+    cursor: catalog.pagination.cursor
+    limit: catalog.pagination.limit
+  limit_default: 10
+  limit_minimum: 1
+  note: lookup_catalog takes an explicit id array and is not paginated.
+money:
+  representation: integer minor units paired with an ISO 4217 currency code
+  example: '{"amount": 600, "currency": "USD"} is $6.00'
+  note: >-
+    Stated verbatim in every checkout tool description; agents must convert to major units before
+    quoting a price to a buyer.
+localization:
+  fields:
+  - catalog.context.address_country
+  - catalog.context.address_region
+  - catalog.context.postal_code
+  - catalog.context.language
+  - catalog.context.currency
+  note: >-
+    agents.md instructs agents to pass context.address_country and context.currency for accurate
+    pricing and availability.
+request_tracing:
+  header: x-request-id
+  observed: true
+  example_note: >-
+    Observed on the MCP endpoint response, alongside Shopify server-timing entries carrying
+    requestID; no provider documentation of the header.
+versioning:
+  scheme: dated protocol versions (UCP)
+  current: '2026-04-08'
+  also_supported:
+  - '2026-01-23'
+  discovery: https://www.drinkhint.com/.well-known/ucp
+  mcp_protocol_version: '2024-11-05'
+  see: lifecycle/hint-lifecycle.yml
+error_envelope:
+  style: json-rpc-2.0 error object
+  shape: '{"jsonrpc":"2.0","id":<id>,"error":{"code":<int>,"message":<string>,"data":{"code":<slug>,"content":<string>,"continue_url":<url>}}}'
+  see: errors/hint-problem-types.yml
+rate_limit_signaling:
+  documented_headers: []
+  observed_headers:
+  - shopify-complexity-score
+  - shopify-complexity-score-v2
+  exhaustion_status: 429
+  note: >-
+    agents.md states the MCP endpoint is rate-limited per IP and that agents must back off on 429.
+    No RateLimit-* or X-RateLimit-* headers were returned. See rate-limits/hint-rate-limits.yml.
+dry_run_mode:
+  supported: false
+  detail: >-
+    No dry-run, preview or simulate flag is declared on any tool. create_checkout returning totals,
+    taxes and discounts without completing is the nearest rehearsal path, but it creates real state.
+reversibility:
+  grade: documented
+  write_surface: true
+  reversal_paths:
+  - action: create_cart / update_cart
+    reversal: cancel_cart
+    operation_id: cancel_cart
+    window: not stated
+    window_source: null
+    note: >-
+      Cancels a cart. The provider states no time bound; the practical bound is that the cart has
+      not been converted into a completed checkout.
+  - action: create_checkout / update_checkout
+    reversal: cancel_checkout
+    operation_id: cancel_checkout
+    window: not stated — usable before complete_checkout
+    window_source: mcp/hint-mcp-tools.json
+    note: >-
+      Cancels a checkout. Derived bound: once complete_checkout has succeeded, payment has been
+      taken and cancel_checkout is no longer the applicable path.
+  - action: complete_checkout (payment taken)
+    reversal: none
+    operation_id: null
+    window: none
+    window_source: https://www.drinkhint.com/policies/refund-policy
+    note: >-
+      The published refund policy states plainly that Hint does not do returns, exchanges or
+      refunds, citing food safety, and directs buyers to customer service instead. There is no
+      refund, void or reverse tool on the MCP surface and no self-service reversal after payment.
+  summary: >-
+    Reversal exists before payment (cancel_cart, cancel_checkout) and is documented as a tool but
+    with no stated window, so this grades `documented` rather than `verified`. After payment the
+    provider explicitly publishes that there is NO reversal path at all — an agent must treat
+    complete_checkout as irreversible and get contemporaneous buyer approval, which is exactly what
+    agents.md and robots.txt require.
+human_approval:
+  required_for: payment / checkout completion
+  source: https://www.drinkhint.com/agents.md
+  statement: >-
+    "Checkout requires human approval. Agents must not complete payment without explicit buyer
+    consent." robots.txt repeats it: no scripted form fills or end-to-end agent flows that finalize
+    payment without an explicit, contemporaneous human approval step.
+cross_links:
+  errors: errors/hint-problem-types.yml
+  lifecycle: lifecycle/hint-lifecycle.yml
+  authentication: authentication/hint-authentication.yml
+  scopes: scopes/hint-scopes.yml
+  rate_limits: rate-limits/hint-rate-limits.yml
+  data_model: data-model/hint-data-model.yml

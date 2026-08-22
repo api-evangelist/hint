@@ -1,0 +1,93 @@
+generated: '2026-08-22'
+method: probed
+source: >-
+  https://www.drinkhint.com/.well-known/ucp, https://www.drinkhint.com/.well-known/openid-configuration,
+  https://www.drinkhint.com/api/ucp/mcp (initialize + tools/list), https://www.drinkhint.com/agents.md
+summary: >-
+  Hint publishes no compliance or certification program of its own. What its hosts DO declare, in
+  machine-readable form, is conformance to the agentic commerce standard stack: Universal Commerce
+  Protocol, Model Context Protocol, and OAuth 2.0 / OpenID Connect for buyer identity.
+standards:
+- id: ucp
+  name: Universal Commerce Protocol
+  version: '2026-04-08'
+  also_supported:
+  - '2026-01-23'
+  conforms: true
+  evidence: >-
+    https://www.drinkhint.com/.well-known/ucp returns HTTP 200 with ucp.version 2026-04-08,
+    supported_versions, services["dev.ucp.shopping"] (transport mcp + embedded), and capabilities
+    for dev.ucp.shopping.checkout, .fulfillment, .discount, .cart, .order, .catalog.search and
+    .catalog.lookup, each naming its ucp.dev spec and JSON Schema.
+  spec: https://ucp.dev/2026-04-08/specification/overview/
+- id: mcp
+  name: Model Context Protocol
+  version: '2024-11-05'
+  conforms: true
+  evidence: >-
+    initialize returned protocolVersion 2024-11-05 with serverInfo universal-commerce 0.1.0 and
+    capabilities for tools, prompts, resources and logging; tools/list returned 13 tools with
+    JSON Schema 2020-12 inputSchema.
+- id: json-schema
+  name: JSON Schema 2020-12
+  conforms: true
+  evidence: >-
+    Every MCP tool inputSchema declares
+    "$schema": "https://json-schema.org/draft/2020-12/schema".
+- id: oauth2
+  name: OAuth 2.0
+  conforms: true
+  evidence: >-
+    /.well-known/oauth-authorization-server and /.well-known/oauth-protected-resource (RFC 9728)
+    return HTTP 200; authorization_code and refresh_token grants, bearer_methods_supported
+    ["header"].
+- id: oidc
+  name: OpenID Connect Discovery
+  conforms: true
+  evidence: >-
+    /.well-known/openid-configuration returns HTTP 200 with issuer, authorization_endpoint,
+    token_endpoint, jwks_uri, end_session_endpoint, RS256 id_token signing and the standard claim
+    set.
+- id: pkce
+  name: PKCE (RFC 7636)
+  conforms: true
+  evidence: code_challenge_methods_supported ["S256"] in the OIDC discovery document.
+- id: rfc9457
+  name: RFC 9457 Problem Details
+  conforms: false
+  evidence: >-
+    The surface is JSON-RPC 2.0; errors use the JSON-RPC error object, not application/problem+json.
+- id: rfc9116
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: /.well-known/security.txt returned HTTP 404 on both hosts.
+- id: rfc8594
+  name: RFC 8594 Sunset header
+  conforms: false
+  evidence: No Sunset or Deprecation headers observed; no deprecation policy published.
+- id: llmstxt
+  name: llms.txt
+  conforms: true
+  evidence: >-
+    https://www.drinkhint.com/llms.txt returns HTTP 200 text/markdown, mirroring /agents.md, and is
+    cross-referenced from robots.txt and a dedicated agentic discovery sitemap.
+domain_standard:
+  id: ucp
+  name: Universal Commerce Protocol (dev.ucp.shopping)
+  market: retail / direct-to-consumer commerce
+  declared_in_contract: true
+  evidence: >-
+    The contract itself declares the standard: /.well-known/ucp names service namespace
+    "dev.ucp.shopping" and capability namespaces dev.ucp.shopping.checkout / .cart / .fulfillment /
+    .discount / .order / .catalog.search / .catalog.lookup, each bound to a published ucp.dev schema
+    URL, plus the Shopify extension namespace dev.shopify.catalog. Payment handlers are declared by
+    namespace too (com.google.pay, dev.shopify.card). An agent that already speaks UCP integrates
+    with this store with no bespoke connector.
+  note: >-
+    The conformance is real and machine-verifiable, but it is delivered by the Shopify platform for
+    this merchant rather than implemented by Hint. Recorded as what the contract says about itself.
+certifications: []
+compliance_programs: []
+notes:
+- No SOC 2, ISO 27001, PCI DSS, HIPAA or FedRAMP claim is published on any Hint host; no trust
+  center was found by probe-security-programs.py. No Compliance pointer is emitted.

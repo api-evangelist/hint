@@ -1,0 +1,199 @@
+generated: '2026-08-22'
+method: derived
+source: mcp/hint-mcp-tools.json (live tools/list from https://www.drinkhint.com/api/ucp/mcp)
+summary: >-
+  The entity graph of Hint's agentic commerce surface, derived from the JSON Schema inputSchema of
+  the 13 live MCP tools. There is no OpenAPI and no published object reference, so only entities and
+  fields that actually appear in the tool schemas are recorded. Response shapes are not enumerated —
+  no tool was called with a real agent profile, so response payloads were not observed.
+id_conventions:
+- entity: Checkout
+  format: gid://shopify/Checkout/{id}
+  source: get_checkout.id description
+- entity: Product / Variant
+  format: opaque identifier string passed as catalog.id or catalog.ids[]
+entities:
+- name: Product
+  description: A catalogue item on the drinkhint.com storefront.
+  operations:
+  - search_catalog
+  - lookup_catalog
+  - get_product
+  fields:
+  - id
+  - selected[] (variant option name/label pairs)
+  - preferences[]
+  filters:
+  - categories[]
+  - price.min / price.max (minor currency units)
+  - available (default true)
+- name: Variant
+  description: A selectable option combination of a Product; addressed through catalog.selected[].
+  fields:
+  - name
+  - label
+- name: Cart
+  description: A mutable basket of line items before checkout.
+  operations:
+  - create_cart
+  - get_cart
+  - update_cart
+  - cancel_cart
+  fields:
+  - line_items[]
+  - buyer
+  - context
+  - attribution
+  - fulfillment
+  - discounts
+- name: Checkout
+  description: The payable object created from a Cart; carries totals, taxes and discounts.
+  operations:
+  - create_checkout
+  - get_checkout
+  - update_checkout
+  - complete_checkout
+  - cancel_checkout
+  fields:
+  - id
+  - cart_id
+  - line_items[]
+  - buyer
+  - context
+  - attribution
+  - fulfillment
+  - discounts
+  - payment
+- name: LineItem
+  description: A quantity of a product or variant inside a Cart or Checkout.
+  fields:
+  - id
+  - quantity
+  - item
+- name: Buyer
+  description: Contact identity supplied for the cart or checkout.
+  fields:
+  - email
+  - phone_number
+- name: BuyerContext
+  description: Localization and pricing hints supplied by the agent on behalf of the buyer.
+  fields:
+  - address_country
+  - address_region
+  - postal_code
+  - language
+  - currency
+  - intent
+  - eligibility[]
+- name: Address
+  description: Billing address attached to a payment instrument.
+  fields:
+  - street_address
+  - extended_address
+  - address_locality
+  - address_region
+  - postal_code
+  - address_country
+  - first_name
+  - last_name
+  - phone_number
+- name: PaymentInstrument
+  description: A card or wallet token presented at checkout.
+  fields:
+  - id
+  - handler_id
+  - type (card | token)
+  - billing_address
+  - credential
+- name: Fulfillment
+  description: Shipping selection for a cart or checkout.
+  fields:
+  - methods[]
+  note: >-
+    The UCP profile declares allows_multi_destination.shipping false and
+    allows_method_combinations [["shipping"]] — one shipping destination, shipping only.
+- name: Discount
+  description: Promo codes applied to a cart or checkout.
+  fields:
+  - codes[] (case-insensitive; replaces previous codes)
+- name: Attribution
+  description: Marketing attribution context carried through the agent session.
+  fields:
+  - referring_domain
+  - click_id_tag
+  - click_id_value
+  - activity_id_tag
+  - activity_id_value
+  - utm_campaign
+  - utm_source
+  - utm_medium
+  - utm_content
+  - utm_term
+- name: Order
+  description: The record produced by a completed checkout.
+  operations:
+  - get_order
+  fields:
+  - id
+  note: Only the id is declared on the request side; the order payload was not observed.
+- name: AgentProfile
+  description: >-
+    The calling agent's UCP profile, required on every request as meta["ucp-agent"].profile.
+  fields:
+  - profile (URI)
+relationships:
+- from: Cart
+  to: LineItem
+  type: has_many
+  via: cart.line_items
+- from: Checkout
+  to: LineItem
+  type: has_many
+  via: checkout.line_items
+- from: Checkout
+  to: Cart
+  type: belongs_to
+  via: checkout.cart_id
+- from: LineItem
+  to: Product
+  type: belongs_to
+  via: line_items[].item
+- from: Product
+  to: Variant
+  type: has_many
+  via: catalog.selected
+- from: Cart
+  to: Buyer
+  type: has_one
+  via: cart.buyer
+- from: Checkout
+  to: Buyer
+  type: has_one
+  via: checkout.buyer
+- from: Checkout
+  to: PaymentInstrument
+  type: has_many
+  via: checkout.payment.instruments
+- from: PaymentInstrument
+  to: Address
+  type: has_one
+  via: instruments[].billing_address
+- from: Checkout
+  to: Fulfillment
+  type: has_one
+  via: checkout.fulfillment
+- from: Checkout
+  to: Discount
+  type: has_one
+  via: checkout.discounts
+- from: Checkout
+  to: Attribution
+  type: has_one
+  via: checkout.attribution
+- from: Order
+  to: Checkout
+  type: belongs_to
+  via: produced by complete_checkout
+gaps:
+- Response schemas are not published by the MCP server (outputSchema is absent on all 13 tools) and
+  were not observed, so no response entity is described here.

@@ -1,23 +1,113 @@
 aid: hint
 name: Hint
-description: 'Hint is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Hint Inc. is a San Francisco based beverage company founded in 2005 by Kara Goldin, known for
+  fruit-infused unsweetened water sold in still, sparkling, caffeinated and kids formats across
+  25+ flavors. A large share of its business is direct-to-consumer through its own storefront at
+  drinkhint.com, which runs on Shopify. Hint publishes no traditional developer program, SDKs or
+  OpenAPI, but the storefront does expose a live, anonymous agent surface: an agents.md / llms.txt
+  agent instruction document, a Universal Commerce Protocol (UCP) merchant profile at
+  /.well-known/ucp, and a Model Context Protocol endpoint at /api/ucp/mcp that answers tools/list
+  with 13 real catalog, cart, checkout and order tools. Checkout explicitly requires contemporaneous
+  human approval before payment.
+image: https://www.drinkhint.com/cdn/shop/files/Logo_Hint-Wordmark-Droplet-Secondary-2_Color.png?v=1762813167
 url: https://raw.githubusercontent.com/api-evangelist/hint/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: agentic-commerce-surface
 specificationVersion: '0.20'
 created: '2026-08-22'
 modified: '2026-08-22'
 tags:
 - Company
-apis: []
+- Beverages
+- Consumer Packaged Goods
+- Ecommerce
+- Direct to Consumer
+- Retail
+- Agentic Commerce
+- Model Context Protocol
+- Universal Commerce Protocol
+- Shopify
+apis:
+- name: Hint Agentic Commerce (UCP / MCP)
+  description: >-
+    The agent-facing commerce surface of the drinkhint.com storefront. Discovery is published at
+    https://www.drinkhint.com/.well-known/ucp (Universal Commerce Protocol merchant profile,
+    versions 2026-04-08 and 2026-01-23) and the callable surface is a Model Context Protocol
+    endpoint at https://www.drinkhint.com/api/ucp/mcp. An anonymous tools/list returns 13 tools
+    covering catalog search and lookup, product detail, cart create/update/cancel, checkout
+    create/update/complete/cancel and order retrieval. The surface is provided natively by the
+    Shopify platform for this merchant's own catalog and is served from Hint's own hosts.
+  humanURL: https://www.drinkhint.com/agents.md
+  baseURL: https://www.drinkhint.com/api/ucp/mcp
+  tags:
+  - Agentic Commerce
+  - Model Context Protocol
+  - Universal Commerce Protocol
+  - Ecommerce
+  properties:
+  - type: MCPServer
+    url: mcp/hint-mcp.yml
+  - type: LLMsTxt
+    url: llms/hint-llms.txt
+  - type: DataModel
+    url: data-model/hint-data-model.yml
+  - type: ErrorCatalog
+    url: errors/hint-problem-types.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/hint-domain-security.yml
 - type: Website
-  url: https://forgeglobal.com/hint_stock/
+  url: https://www.drinkhint.com/
+- type: Documentation
+  url: https://www.drinkhint.com/agents.md
+- type: Support
+  url: https://www.drinkhint.com/pages/contact-us
+- type: Blog
+  url: https://www.drinkhint.com/blogs/news
+- type: SignUp
+  url: https://www.drinkhint.com/account/login
+- type: TermsOfService
+  url: https://www.drinkhint.com/policies/terms-of-service
+- type: PrivacyPolicy
+  url: https://www.drinkhint.com/policies/privacy-policy
+- type: MCPServer
+  url: mcp/hint-mcp.yml
+- type: LLMsTxt
+  url: llms/hint-llms.txt
+- type: WellKnown
+  url: well-known/hint-well-known.yml
+- type: Authentication
+  url: authentication/hint-authentication.yml
+- type: OAuthScopes
+  url: scopes/hint-scopes.yml
+- type: Conventions
+  url: conventions/hint-conventions.yml
+- type: Idempotency
+  url: conventions/hint-conventions.yml
+- type: ErrorCatalog
+  url: errors/hint-problem-types.yml
+- type: Conformance
+  url: conformance/hint-conformance.yml
+- type: Lifecycle
+  url: lifecycle/hint-lifecycle.yml
+- type: RateLimits
+  url: rate-limits/hint-rate-limits.yml
+- type: Plans
+  url: plans/hint-plans-pricing.yml
+- type: DataModel
+  url: data-model/hint-data-model.yml
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-22'
+  status: enriched
+  artifacts_added: 22
+  pass: local-v1

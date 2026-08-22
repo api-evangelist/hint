@@ -1,0 +1,9 @@
+{
+    "resource": "https://www.drinkhint.com",
+    "authorization_servers": [
+        "https://shopify.com/authentication/1430159418"
+    ],
+    "bearer_methods_supported": [
+        "header"
+    ]
+}

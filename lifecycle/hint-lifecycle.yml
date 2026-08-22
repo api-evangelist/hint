@@ -1,0 +1,47 @@
+generated: '2026-08-22'
+method: probed
+source: >-
+  https://www.drinkhint.com/.well-known/ucp, https://www.drinkhint.com/api/ucp/mcp (initialize),
+  https://www.drinkhint.com/agents.md
+summary: >-
+  Hint publishes no API lifecycle policy of its own. The only versioning signal on its hosts is the
+  dated protocol version negotiation carried by the UCP merchant profile and the MCP initialize
+  handshake. There is no status page, no deprecation policy, no Sunset/Deprecation headers and no
+  SLA on any Hint host.
+versioning:
+  scheme: dated protocol versions
+  current: '2026-04-08'
+  supported:
+  - version: '2026-04-08'
+    label: latest stable
+    profile: https://drinkhint.myshopify.com/.well-known/ucp/2026-04-08
+  - version: '2026-01-23'
+    label: previous
+    profile: https://drinkhint.myshopify.com/.well-known/ucp/2026-01-23
+  negotiation: >-
+    Two UCP versions are served side by side from versioned profile URLs; MCP negotiates separately
+    and reported protocolVersion 2024-11-05 on initialize.
+  in_url: false
+  in_header: false
+status_page:
+  published: false
+  note: >-
+    No status.drinkhint.com or storefront status page. The underlying platform publishes
+    status.shopify.com, but that is Shopify's page for Shopify, not Hint's, and is not wired as a
+    StatusPage pointer for this provider.
+deprecation_policy:
+  published: false
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    UCP 2026-01-23 is still served alongside 2026-04-08, so an older version has not been withdrawn,
+    but no policy states how long a version is kept or how withdrawal is announced.
+sla:
+  published: false
+support:
+  channel: https://www.drinkhint.com/pages/contact-us
+  faq: https://www.drinkhint.com/pages/faq
+deprecated_operations: []
+notes:
+- No StatusPage or Deprecation pointer is emitted in apis.yml, because neither exists on a Hint
+  host. Recording the absence is the finding.

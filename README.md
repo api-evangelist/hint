@@ -64,5 +64,21 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Hint is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/hint_stock/
+Hint Inc. is a San Francisco based beverage company founded in 2005 by Kara Goldin, known for fruit-infused
+unsweetened water sold in still, sparkling, caffeinated and kids formats across 25+ flavors. A large share of its
+business is direct-to-consumer through its own storefront at drinkhint.com, which runs on Shopify.
+
+Hint publishes no traditional developer program — no SDKs, no OpenAPI, no API keys, no GitHub organization. Its
+storefront does, however, serve a live agent surface:
+
+- **Agent instructions** — https://www.drinkhint.com/agents.md (mirrored at `/llms.txt`, referenced from
+  `robots.txt` and a dedicated agentic discovery sitemap)
+- **UCP merchant profile** — https://www.drinkhint.com/.well-known/ucp (Universal Commerce Protocol 2026-04-08)
+- **MCP endpoint** — https://www.drinkhint.com/api/ucp/mcp — an anonymous `tools/list` returns 13 catalog, cart,
+  checkout and order tools with full JSON Schema input schemas
+
+Checkout completion requires explicit, contemporaneous human approval, requires an idempotency key, and — per
+Hint's own refund policy — cannot be reversed afterwards.
+
+- https://www.drinkhint.com/
+- Secondary-market listing (harvest source): https://forgeglobal.com/hint_stock/

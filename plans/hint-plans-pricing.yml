@@ -1,0 +1,30 @@
+generated: '2026-08-22'
+method: searched
+source: >-
+  https://www.drinkhint.com/agents.md, https://www.drinkhint.com/.well-known/ucp,
+  https://www.drinkhint.com/pages/subscribe-and-save, https://www.drinkhint.com/pages/rewards
+summary: >-
+  Hint publishes no API plans, tiers or developer pricing. The agentic commerce surface is free and
+  anonymous to call — there is no signup, no key, no metered tier and no paid access level. Hint's
+  published pricing is retail product pricing on the storefront, which is a different thing from API
+  plan pricing and is not recorded as a plan here.
+plan_count: 0
+plans: []
+api_access_model:
+  cost: free
+  registration_required: false
+  credential_required: false
+  detail: >-
+    An anonymous POST to https://www.drinkhint.com/api/ucp/mcp returned HTTP 200 with the full tool
+    list on 2026-08-22. Access is gated only by a UCP agent profile URI and by the requirement that a
+    human approve payment.
+commercial_surfaces_not_plans:
+- name: Subscribe & Save
+  url: https://www.drinkhint.com/pages/subscribe-and-save
+  note: consumer subscription for physical product delivery, not API access
+- name: Hint Rewards
+  url: https://www.drinkhint.com/pages/rewards
+  note: consumer loyalty program, not API access
+notes:
+- Recorded as plan_count 0 with a reason rather than omitted, so the absence is legible as a
+  measurement instead of a gap in profiling.

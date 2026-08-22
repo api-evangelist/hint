@@ -1,0 +1,75 @@
+generated: '2026-08-22'
+method: probed
+source: live GET of /.well-known/* on every Hint host, 2026-08-22
+note: >-
+  Four /.well-known documents return real 200 bodies on both hosts. security.txt, api-catalog,
+  ai-plugin.json, agent-card.json and agent.json all 404 with a real Shopify 404 body (not an SPA
+  shell), so no SecurityTxt or AgentCard pointer is emitted. /.well-known/ucp is the Universal
+  Commerce Protocol merchant profile and is the discovery document for the MCP endpoint. The OIDC
+  and OAuth documents describe Shopify Customer Accounts for THIS store (issuer
+  https://shopify.com/authentication/1430159418) and are served from Hint's own hosts.
+hosts:
+- host: www.drinkhint.com
+  documents:
+  - path: /.well-known/ucp
+    status: 200
+    file: well-known/hint-ucp.json
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: well-known/hint-openid-configuration.json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: well-known/hint-oauth-authorization-server.json
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: well-known/hint-oauth-protected-resource.json
+  - path: /.well-known/apple-app-site-association
+    status: 200
+    file: null
+    note: empty stub — {"applinks":{"apps":[],"details":[]},...}; recorded, not saved
+  - path: /.well-known/assetlinks.json
+    status: 200
+    file: null
+    note: empty array; recorded, not saved
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: drinkhint.myshopify.com
+  documents:
+  - path: /.well-known/ucp
+    status: 200
+    file: null
+    note: identical merchant profile served on the store's Shopify tenant host
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: null
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
