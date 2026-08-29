@@ -10,6 +10,17 @@ description: >-
   /.well-known/ucp, and a Model Context Protocol endpoint at /api/ucp/mcp that answers tools/list
   with 13 real catalog, cart, checkout and order tools. Checkout explicitly requires contemporaneous
   human approval before payment.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://www.drinkhint.com/cdn/shop/files/Logo_Hint-Wordmark-Droplet-Secondary-2_Color.png?v=1762813167
 url: https://raw.githubusercontent.com/api-evangelist/hint/refs/heads/main/apis.yml
 x-type: company
