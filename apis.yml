@@ -98,6 +98,9 @@ apis:
     url: data-model/hint-data-model.yml
   - type: ErrorCatalog
     url: errors/hint-problem-types.yml
+  x-surface: platform-generated
+  x-platform: shopify
+  x-platform-surface: ucp
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
