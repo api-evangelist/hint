@@ -1,0 +1,31 @@
+generated: '2026-10-12'
+method: searched
+source:
+- https://zapier.com/apps/hint/integrations
+- https://n8n.io/integrations/hint/
+- https://composio.dev/toolkits/hint
+- https://monid.ai/tools/hint
+checked:
+- https://composio.dev/toolkits/hint
+- https://monid.ai/tools/hint
+- https://n8n.io/integrations/hint/
+- https://zapier.com/apps/hint/integrations
+summary: null
+marketplace_apps: []
+edges:
+- partner_name: spruce-health
+  partner: spruce-health
+  partner_match: domain
+  type: contract
+  channel: partner-built
+  relationship: processor-connection
+  direction: partner-built
+  evidence: https://github.com/api-evangelist/spruce-health/blob/main/openapi/spruce-health-contacts-api-openapi.yml
+  contract_reference:
+    repo: spruce-health
+    spec_file: spruce-health-contacts-api-openapi.yml
+    value: hint
+    property: components.schemas.contact_integrationLinkType
+    detected_by: detect-payment-method-edges.py
+    detected: '2026-10-12'
+templates: []
